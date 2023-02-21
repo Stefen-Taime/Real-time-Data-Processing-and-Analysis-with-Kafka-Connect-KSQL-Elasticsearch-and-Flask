@@ -27,5 +27,5 @@ def produce_to_topic(topic_name, data):
     producer.flush()
 
 if __name__ == "__main__":
-    data = read_json_file("/home/stefen/test_stream/race-mapper/scripts/us_cities.json")
+    data = read_json_file("path/scripts/us_cities.json")
     produce_to_topic("city_data", data)
