@@ -1,0 +1,54 @@
+CREATE STREAM airplane_data_stream (
+  timestamp VARCHAR, 
+  airplane_id VARCHAR, 
+  airplane_model VARCHAR, 
+  airline_company VARCHAR, 
+  departure_city VARCHAR, 
+  arrival_city VARCHAR, 
+  flight_id VARCHAR, 
+  flight_number INT, 
+  departure_time VARCHAR, 
+  arrival_time VARCHAR, 
+  flight_speed DOUBLE, 
+  altitude DOUBLE, 
+  engine_performance DOUBLE, 
+  temperature DOUBLE, 
+  humidity DOUBLE, 
+  pressure DOUBLE
+) WITH (KAFKA_TOPIC='airplane-da
+
+
+CREATE STREAM city_data_stream (
+  id INT, 
+  state_code VARCHAR, 
+  state_name VARCHAR, 
+  city VARCHAR, 
+  county VARCHAR, 
+  latitude DOUBLE, 
+  longitude DOUBLE
+) WITH (KAFKA_TOPIC='city_data', VALUE_FORMAT='JSON');
+
+
+CREATE STREAM departure_cities AS 
+SELECT * 
+FROM city_data_stream;
+
+CREATE STREAM arrival_cities AS 
+SELECT * 
+FROM city_data_stream;
+
+
+CREATE STREAM enriched_data AS 
+SELECT ad.timestamp, ad.airplane_id, ad.airplane_model, ad.airline_company, 
+       dc.latitude AS departure_latitude, dc.longitude AS departure_longitude, 
+       ad.departure_city, ac.latitude AS arrival_latitude, ac.longitude AS arrival_longitude, 
+       ad.arrival_city, ad.flight_id, ad.flight_number, 
+       ad.departure_time, ad.arrival_time, ad.flight_speed, ad.altitude, 
+       ad.engine_performance, ad.temperature, ad.humidity, ad.pressure
+FROM airplane_data_stream ad 
+LEFT JOIN departure_cities dc 
+WITHIN 1 HOUR
+ON ad.departure_city = dc.city 
+LEFT JOIN arrival_cities ac 
+WITHIN 1 HOUR
+ON ad.arrival_city = ac.city;

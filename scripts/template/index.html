@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>All_Get_Route</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Get Route Endpoints</h1>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('get_average_flight_speed') }}">Average Flight Speed</a></li>
+        <li><a href="{{ url_for('get_average_engine_performance') }}">Average Engine Performance</a></li>
+        <li><a href="{{ url_for('get_number_of_flights') }}">Number of Flights</a></li>
+        <li><a href="{{ url_for('get_airline_with_most_flights') }}">Airline with Most Flights</a></li>
+        <li><a href="{{ url_for('get_top_departure_cities') }}">Top Departure Cities</a></li>
+        <li><a href="{{ url_for('get_top_arrival_cities') }}">Top Arrival Cities</a></li>
+        <li><a href="{{ url_for('get_average_temperature') }}">Average Temperature</a></li>
+        <li><a href="{{ url_for('get_average_humidity') }}">Average Humidity</a></li>
+        <li><a href="{{ url_for('get_average_pressure') }}">Average Pressure</a></li>
+        <li><a href="{{ url_for('get_total_distance_flown') }}">Total Distance Flown</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+    <footer>
+      &copy; 2023 Stefen Taime
+    </footer>
+  </body>
+</html>

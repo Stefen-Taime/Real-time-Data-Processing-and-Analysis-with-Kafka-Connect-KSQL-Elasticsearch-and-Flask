@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+# unset any http_proxy and https_proxy environment variables
+unset http_proxy
+unset https_proxy
+# set http_proxy and https_proxy to empty values to override any existing values
+export http_proxy=
+export https_proxy=
+
+# set the Elasticsearch host
+HOST=localhost:9200
+
+# define the Elasticsearch dynamic template
+# this template specifies mappings for certain field names in the ENRICHED_DATA stream
+curl -XPUT "http://${HOST}/_template/enriched_data/" -H 'Content-Type: application/json' -d'
+{
+  "template": "enriched_data",
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "properties": {
+      "timestamp": {
+        "type": "date"
+      },
+      "airplane_id": {
+        "type": "keyword"
+      },
+      "airplane_model": {
+        "type": "keyword"
+      },
+      "airline_company": {
+        "type": "keyword"
+      },
+      "departure_latitude": {
+        "type": "float"
+      },
+      "departure_longitude": {
+        "type": "float"
+      },
+      "departure_city": {
+        "type": "keyword"
+      },
+      "arrival_latitude": {
+        "type": "float"
+      },
+      "arrival_longitude": {
+        "type": "float"
+      },
+      "arrival_city": {
+        "type": "keyword"
+      },
+      "flight_id": {
+        "type": "keyword"
+      },
+      "flight_number": {
+        "type": "integer"
+      },
+      "departure_time": {
+        "type": "date"
+      },
+      "arrival_time": {
+        "type": "date"
+      },
+      "flight_speed": {
+        "type": "float"
+      },
+      "altitude": {
+        "type": "float"
+      },
+      "engine_performance": {
+        "type": "float"
+      },
+      "temperature": {
+        "type": "float"
+      },
+      "humidity": {
+        "type": "float"
+      },
+      "pressure": {
+        "type": "float"
+      }
+    }
+  }
+}'
+
+# output a newline to separate the curl output from other output
+echo

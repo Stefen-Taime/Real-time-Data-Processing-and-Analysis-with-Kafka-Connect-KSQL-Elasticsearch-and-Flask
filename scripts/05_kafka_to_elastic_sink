@@ -1,0 +1,40 @@
+#!/bin/bash
+
+unset http_proxy
+unset https_proxy
+export http_proxy
+export https_proxy
+
+HOST=http://localhost:8083
+
+table_name="enriched_data"
+TABLE_NAME=`echo $table_name | tr '[a-z]' '[A-Z]'`
+
+echo "************************************"
+echo "*** MAP ${TABLE_NAME} ***"
+echo "************************************"
+
+curl -X "POST" "${HOST}/connectors/" \
+     -H "Content-Type: application/json" \
+     -d $'{
+  "name": "es_sink_'$TABLE_NAME'",
+  "config": {
+    "schema.ignore": "true",
+    "topics": "'$TABLE_NAME'",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter.schemas.enable": false,
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "key.ignore": "true",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "type.name": "type.name=kafkaconnect",
+    "topic.index.map": "'$TABLE_NAME':'$table_name'",
+    "connection.url": "http://elasticsearch:9200",
+    "transforms": "ExtractTimestamp",
+    "transforms.ExtractTimestamp.type": "org.apache.kafka.connect.transforms.InsertField$Value",
+    "transforms.ExtractTimestamp.timestamp.field" : "timestamp",
+    "schema.mapping": "{ \"properties\": { \"timestamp\": { \"type\": \"date\" }, \"airplane_id\": { \"type\": \"keyword\" }, \"airplane_model\": { \"type\": \"keyword\" }, \"airline_company\": { \"type\": \"keyword\" }, \"departure_city\": { \"type\": \"keyword\" }, \"arrival_city\": { \"type\": \"keyword\" }, \"flight_id\": { \"type\": \"keyword\" }, \"flight_number\": { \"type\": \"integer\" }, \"departure_time\": { \"type\": \"date\" }, \"arrival_time\": { \"type\": \"date\" }, \"flight_speed\": { \"type\": \"float\" }, \"altitude\": { \"type\": \"float\" }, \"engine_performance\": { \"type\": \"float\" }, \"temperature\": { \"type\": \"float\" }, \"humidity\": { \"type\": \"float\" }, \"pressure\": { \"type\": \"float\" }, \"departure_latitude\": { \"type\": \"geo_point\" }, \"departure_longitude\": { \"type\": \"geo_point\" }, \"arrival_latitude\": { \"type\": \"geo_point\" }, \"arrival_longitude\": { \"type\": \"geo_point\" } } }"
+  }
+}'
+
+echo
+echo
