@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, render_template
 
-app = Flask(__name__, template_folder='/home/stefen/test_stream/race-mapper/scripts/template')
+app = Flask(__name__, template_folder='path/scripts/template')
 
 es = Elasticsearch()
 
